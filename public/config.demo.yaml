@@ -1,0 +1,30 @@
+ghttpx:
+  debug: true
+  listen: 8090
+
+gcronx:
+  setp: 5   #秒级别
+
+grpcx:
+  
+
+logger:
+  default:
+    path: runtime
+    level: all
+    stdout: false
+
+database:
+  default:
+    - type: mysql
+      link: user:pass@tcp(host:port)/dbname?charset=utf8mb4&loc=Local&parseTime=true
+      role: master
+
+redis:
+  default:
+    address: host:port
+    pass: 
+    db: 
+
+users:
+  

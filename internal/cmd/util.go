@@ -1,0 +1,33 @@
+package cmd
+
+import (
+	"fmt"
+	"io/fs"
+	"strings"
+)
+
+func get_public_files(rootfs fs.FS) []string {
+	var (
+		listfn func(path string) []string
+	)
+	listfn = func(path string) []string {
+		var (
+			result = make([]string, 0, 30)
+			rule   = fmt.Sprintf("%s/*", strings.TrimRight(path, "/"))
+		)
+		if files, err := fs.Glob(rootfs, rule); err == nil {
+			for _, f := range files {
+				if strings.Contains(f, ".go") {
+					continue
+				}
+				result = append(result, f)
+				if finfo, err := fs.Stat(rootfs, f); err == nil && finfo.IsDir() {
+					subresult := listfn(f)
+					result = append(result, subresult...)
+				}
+			}
+		}
+		return result
+	}
+	return listfn(".")
+}
