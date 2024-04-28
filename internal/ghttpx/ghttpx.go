@@ -1,18 +1,18 @@
 package ghttpx
 
 import (
-	"fmt"
-
-	"github.com/gogf/gf/v2/os/gctx"
+	"github.com/labstack/echo/v4"
 	"github.com/ynwcel/goxbase/internal/svcx"
+	"github.com/ynwcel/goxbase/pkg/pechox"
 )
 
 func Start() error {
-	ctx := gctx.GetInitCtx()
-	svcx.Log().Info(ctx, "start-ghttpx")
-	fmt.Println(svcx.Viper().GetInt("ghttpx.listen"))
-	fmt.Println(svcx.DB().Query(ctx, "show tables"))
-	fmt.Println(svcx.Redis().Keys(ctx, "*"))
-	//svcx.Debug()
-	return nil
+	var (
+		server = pechox.New(svcx.Viper().GetStringMap("ghttpx"))
+		engine = server.Engine()
+	)
+	engine.GET("/", func(ectx echo.Context) error {
+		return ectx.String(200, "running~")
+	})
+	return server.Run()
 }
