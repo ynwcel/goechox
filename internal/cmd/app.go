@@ -28,16 +28,16 @@ func New(appVersion string) *cmdx {
 	cx.pfset.BoolVar(&cx.init, "init", false, "init in current folder")
 	cx.pfset.BoolVar(&cx.ghttpx, "ghttpx", false, "start ghttpx process")
 	cx.pfset.BoolVar(&cx.gcronx, "gcronx", false, "start gcronx process")
-	cx.pfset.BoolVar(&cx.grpcx, "grcpx", false, "start grpcx process")
+	cx.pfset.BoolVar(&cx.grpcx, "grpcx", false, "start grpcx process")
 	cx.pfset.BoolVarP(&cx.help, "help", "h", false, "show help message")
 	cx.pfset.BoolVarP(&cx.version, "version", "v", false, "show version")
 	cx.pfset.Usage = func() {
-		fmt.Println("Name:")
-		fmt.Printf("  %s [version=%s]\n", appName, appVersion)
 		fmt.Println("Usage:")
 		fmt.Printf("  %s [options]\n", appName)
 		fmt.Println("Options:")
 		cx.pfset.PrintDefaults()
+		fmt.Println("Version:")
+		fmt.Printf("  %s", appVersion)
 		fmt.Println()
 	}
 	return cx
