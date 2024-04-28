@@ -1,0 +1,13 @@
+.vscode/
+**/.DS_Store
+.test/
+config.yaml
+hack/config.yaml
+public/config.yaml
+runtime
+runtime/*
+storages
+storages/*
+main
+main.exe
+main.exe~
