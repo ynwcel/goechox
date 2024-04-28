@@ -10,7 +10,7 @@ grpcx:
 
 logger:
   default:
-    path: runtime
+    path: runtimes
     level: all
     stdout: false
 

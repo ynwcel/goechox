@@ -11,15 +11,17 @@ import (
 func Redis(group ...string) *gredis.Redis {
 	var (
 		groupName    = gredis.DefaultGroupName
+		cfg_key      = ""
 		instance_key = ""
 	)
 	if len(group) > 0 && len(group[0]) > 0 {
 		groupName = group[0]
 	}
-	instance_key = fmt.Sprintf("redis.%s", groupName)
+	cfg_key = fmt.Sprintf("redis.%s", groupName)
+	instance_key = fmt.Sprintf("svcx.%s", cfg_key)
 	redis, ok := instances.Load(instance_key)
 	if !ok {
-		cfg_map := Viper().GetStringMap(instance_key)
+		cfg_map := Viper().GetStringMap(cfg_key)
 		vredis := new_gf_greids(cfg_map)
 		instances.Store(instance_key, vredis)
 		redis = vredis

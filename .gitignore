@@ -1,11 +1,12 @@
 .vscode/
 **/.DS_Store
 .test/
+.env
 config.yaml
 hack/config.yaml
 public/config.yaml
-runtime
-runtime/*
+runtimes
+runtimes/*
 storages
 storages/*
 main

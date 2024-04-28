@@ -2,6 +2,8 @@ package svcx
 
 import (
 	"fmt"
+	"os"
+	"strings"
 	"time"
 
 	"github.com/gogf/gf/v2/database/gdb"
@@ -12,17 +14,26 @@ import (
 func DB(group ...string) gdb.DB {
 	var (
 		groupName    = gdb.DefaultGroupName
+		cfg_key      = ""
 		instance_key = ""
 	)
 	if len(group) > 0 && len(group[0]) > 0 {
 		groupName = group[0]
 	}
-	instance_key = fmt.Sprintf("svcx.database.%s", groupName)
+	cfg_key = fmt.Sprintf("database.%s", groupName)
+	instance_key = fmt.Sprintf("svcx.%s", cfg_key)
 	db, ok := instances.Load(instance_key)
 	if !ok {
-		cfg_any := Viper().Get(instance_key)
+		cfg_any := Viper().Get(cfg_key)
 		vdb := new_gf_gdb(cfg_any)
-		vdb.SetLogger(Log(fmt.Sprintf("db.%s", groupName)))
+		if log_cfg_map := Viper().GetStringMap(fmt.Sprintf("%s.logger", cfg_key)); len(log_cfg_map) > 0 {
+			vdb.SetLogger(new_gf_glog(log_cfg_map))
+		} else if group := Viper().GetString(fmt.Sprintf("%s.logger_group", cfg_key)); len(group) > 0 {
+			vdb.SetLogger(Log(group))
+		} else if run_mode := os.Getenv("RUN_MODE"); len(run_mode) > 0 && strings.ToLower(run_mode) == "debug" {
+			vdb.SetDebug(true)
+			vdb.SetLogger(Log())
+		}
 		instances.Store(instance_key, vdb)
 		db = vdb
 	}
@@ -42,15 +53,6 @@ func new_gf_gdb(cfg any) gdb.DB {
 }
 
 func new_gdb_by_slices(cfg []any) gdb.DB {
-	for idx, val := range cfg {
-		if val_map, ok := val.(map[string]any); ok {
-			if _, ok := val_map["debug"]; !ok {
-				val_map["debug"] = true
-			}
-			cfg[idx] = val_map
-		}
-	}
-
 	var (
 		groupName = fmt.Sprintf("pgdb_%d", time.Now().Unix())
 		group     = gdb.ConfigGroup{}
@@ -69,10 +71,6 @@ func new_gdb_by_slices(cfg []any) gdb.DB {
 }
 
 func new_gdb_by_map(cfg map[string]any) gdb.DB {
-	if _, ok := cfg["debug"]; !ok {
-		cfg["debug"] = true
-	}
-
 	var (
 		dbnode_cfg = gdb.ConfigNode{}
 		db         gdb.DB

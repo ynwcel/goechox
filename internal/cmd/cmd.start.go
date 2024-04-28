@@ -12,7 +12,7 @@ import (
 func (cx *cmdx) start_handler() error {
 	var (
 		dirs = []string{
-			"./runtime",
+			"./runtimes",
 			"./storages",
 		}
 		errGroup = new(errgroup.Group)

@@ -1,6 +1,10 @@
 package main
 
-import "github.com/ynwcel/goxbase/internal/cmd"
+import (
+	_ "github.com/gogf/gf/contrib/drivers/mysql/v2"
+	_ "github.com/gogf/gf/contrib/nosql/redis/v2"
+	"github.com/ynwcel/goxbase/internal/cmd"
+)
 
 var (
 	appVersion = "0.0.1"
