@@ -31,3 +31,16 @@ func get_public_files(rootfs fs.FS) []string {
 	}
 	return listfn(".")
 }
+
+func try(f func() error) (err error) {
+	defer func() {
+		if exception := recover(); exception != nil {
+			if exception_err, ok := exception.(error); ok {
+				err = exception_err
+			} else {
+				err = fmt.Errorf("%v", exception)
+			}
+		}
+	}()
+	return f()
+}

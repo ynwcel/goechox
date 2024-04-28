@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/gogf/gf/v2/os/gfile"
 	"github.com/ynwcel/goxbase/internal/gcronx"
 	"github.com/ynwcel/goxbase/internal/ghttpx"
@@ -27,17 +29,26 @@ func (cx *cmdx) start_handler() error {
 	}
 	if cx.ghttpx {
 		errGroup.Go(func() error {
-			return ghttpx.Start()
+			if err := try(ghttpx.Start); err != nil {
+				return fmt.Errorf("start-ghttpx-faild:%w", err)
+			}
+			return nil
 		})
 	}
 	if cx.gcronx {
 		errGroup.Go(func() error {
-			return gcronx.Start()
+			if err := try(gcronx.Start); err != nil {
+				return fmt.Errorf("start-gcronx-faild:%w", err)
+			}
+			return nil
 		})
 	}
 	if cx.grpcx {
 		errGroup.Go(func() error {
-			return grpcx.Start()
+			if err := try(grpcx.Start); err != nil {
+				return fmt.Errorf("start-grpcx-faild:%w", err)
+			}
+			return nil
 		})
 	}
 	return errGroup.Wait()
